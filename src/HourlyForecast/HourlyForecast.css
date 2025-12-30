@@ -1,0 +1,65 @@
+.nextHours {
+}
+
+.nextHours__title {
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+
+.nextHours__titleSub {
+  opacity: 0.7;
+}
+
+.nextHours__strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nextHours__card {
+  scroll-snap-align: start;
+  min-width: 64px;
+  padding: 10px 10px 8px;
+  border-radius: 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.nextHours__time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
+}
+
+.nextHours__iconWrap {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nextHours__icon {
+  opacity: 0.95;
+  width: 28px;
+  height: 28px;
+}
+
+.nextHours__temp {
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.nextHours__humidity {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
