@@ -1,81 +1,253 @@
-:root {
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.7);
-  --glass: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-border-strong: rgba(255, 255, 255, 0.16);
+:root{
+  --bg0: #061a3a;
+  --bg1: #0b2e66;
+  --bg2: #0a4aa0;
+
+  --text: rgba(255,255,255,0.96);
+  --muted: rgba(255,255,255,0.68);
+
+  --glass: rgba(255,255,255,0.10);
+  --glass2: rgba(255,255,255,0.06);
+  --stroke: rgba(255,255,255,0.14);
+
+  --radius-xl: 28px;
+  --radius-lg: 18px;
 }
 
-.card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border-strong);
-  border-radius: 22px;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 
-.cardBody {
-  padding: 12px;
-}
-
-.segment {
-  display: flex;
-  gap: 6px;
-  padding: 6px;
-  border-radius: 16px;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-.error {
-  margin-top: 12;
-  text-align: center;
-  color: #ffb4b4;
-}
-
-.refreshBtn {
-  display: inline-flex;
-  align-items: center;
+body {
   justify-content: center;
+  margin: 0;
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* Samsung-ish deep blue gradient background */
+  background:
+    radial-gradient(1200px 700px at 20% 10%, rgba(86,173,255,0.20), transparent 60%),
+    radial-gradient(900px 500px at 80% 30%, rgba(110,120,255,0.14), transparent 55%),
+    linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 40%, var(--bg0) 100%);
+}
+
+.page {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 26px 18px 42px;
+}
+
+.muted { color: var(--muted); }
+
+.header {
+  margin: 6px 0 18px;
+}
+.header h1 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.92;
+  letter-spacing: 0.2px;
+}
+.header p { margin: 0; }
+
+/* “Glass” cards */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+  margin: 14px 0;
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.10);
+  backdrop-filter: blur(12px);
+}
+
+/* Inputs / controls */
+.row { display: flex; gap: 10px; align-items: center; }
+.row.wrap { flex-wrap: wrap; }
+
+.label {
+  display: flex;
   gap: 8px;
+  align-items: center;
+  color: rgba(255,255,255,0.80);
+  font-size: 13px;
+}
 
-  padding: 8px 12px;
-  border-radius: 12px;
+.input, .select {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 10px 12px;
+  outline: none;
+}
 
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.1);
+.input::placeholder { color: rgba(255,255,255,0.45); }
 
-  color: rgba(255, 255, 255, 0.92);
-  font-weight: 700;
-  font-size: 14px;
+.input { flex: 1; }
+.input.small { width: 120px; flex: 0 0 auto; }
 
+.btn {
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 10px 14px;
   cursor: pointer;
-  user-select: none;
+  transition: transform 120ms ease, background 120ms ease;
+}
+.btn:hover { background: rgba(255,255,255,0.20); transform: translateY(-1px); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
-  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease,
-    opacity 120ms ease;
+/* City pills */
+.pill {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+.pill:hover { background: rgba(255,255,255,0.16); transform: translateY(-1px); }
+.pill.active {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.28);
 }
 
-.refreshBtn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.22);
+/* Error */
+.error {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 70, 70, 0.18);
+  border: 1px solid rgba(255, 90, 90, 0.35);
 }
 
-.refreshBtn:active {
-  transform: translateY(1px);
+/* ======= HERO (current weather) ======= */
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.95;
 }
 
-.refreshBtn:focus-visible {
-  outline: 2px solid rgba(140, 160, 255, 0.7);
-  outline-offset: 3px;
+.current {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
 }
 
-.refreshBtn:disabled {
+.big {
+  font-size: 74px;              /* big temp like Samsung */
+  font-weight: 300;            /* thin */
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+
+.current-main .muted {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.current-icon {
+  text-align: right;
+  min-width: 120px;
+}
+.current-icon img { width: 68px; height: 68px; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25)); }
+
+/* ======= TWO-COLUMN GRID ======= */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .big { font-size: 64px; }
+}
+
+/* ======= “Next Hours” look ======= */
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.78);
+}
+
+/* Your existing table -> make it feel like a horizontal strip */
+.table {
+  margin-top: 8px;
+}
+
+/* Hide the big header row, Samsung doesn’t show table headers */
+.thead { display: none; }
+
+/* Make rows look like “hour pills” in a horizontal scroller */
+.trow {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 0.9fr 0.9fr 0.7fr 0.6fr;
+  gap: 10px;
+  align-items: center;
+
+  padding: 12px 12px;
+  margin: 10px 0;
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* If you want the Hourly section to be horizontal scroll instead,
+   wrap rows in a div and apply these (see note below). */
+.iconcell img { width: 34px; height: 34px; }
+
+/* Daily rows: cleaner separators */
+.trow + .trow { margin-top: 10px; }
+
+/* Footer */
+.footer { margin-top: 18px; color: var(--muted); }
+
+.topBar{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px; /* inferior margin */
+}
+
+/* make search take remaining space */
+.topBar__search{
+  flex: 1;
+  min-width: 0; /* prevents overflow in flex rows */
+}
+
+/* if error shows, keep it aligned on the row */
+.topBar__error{
+  margin: 0;
+  flex: 1;
+}
+
+/* compact refresh button */
+.refreshBtn{
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  height: 36px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+}
+
+.refreshBtn:disabled{
   opacity: 0.55;
   cursor: not-allowed;
-  transform: none;
 }

@@ -1,8 +1,6 @@
 import React from "react";
-import type { Forecast3hItem } from "../lib/openWeather";
-import { iconUrl } from "../lib/openWeather";
 import "./HourlyForecast.css";
-
+import { iconUrl, type Forecast3hItem } from "../../lib/openWeather";
 export function HourlyForecast({
   timezoneOffset,
   hourlyData,
@@ -17,10 +15,6 @@ export function HourlyForecast({
 
   return (
     <div className="nextHours">
-      <div className="nextHours__title">
-        Next Hours <span className="nextHours__titleSub">(3h steps)</span>
-      </div>
-
       <div className="nextHours__strip">
         {data.map((h) => {
           const w = h.weather?.[0];

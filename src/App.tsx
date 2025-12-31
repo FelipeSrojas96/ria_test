@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useCityForecast } from "./lib/oneCall";
-import { Next5DaysForecast } from "./DailyForecast/DailyForecast";
-import { HourlyForecast } from "./HourlyForecast/HourlyForecast";
+import { Next5DaysForecast } from "./Components/DailyForecast/DailyForecast";
+import { HourlyForecast } from "./Components/HourlyForecast/HourlyForecast";
 import "./App.css";
-import { CitySearch } from "./citySearch/citySearch";
-import type { CityPick } from "./citySearch/citySearch";
+import { CitySearch } from "./Components/citySearch/citySearch";
+import type { CityPick } from "./Components/citySearch/citySearch";
 
 type City = { id: "rio" | "beijing" | "la"; label: string; query: string };
 
@@ -64,28 +64,31 @@ export default function App() {
     });
 
   return (
-    <div>
-      <button
-        onClick={() => setRefreshKey((k) => k + 1)}
-        disabled={loading}
-        className="refreshBtn"
-      >
-        {loading ? "Refreshing…" : "Refresh"}
-      </button>
+    <div className="body">
+      <div className="topBar">
+        <button
+          onClick={() => setRefreshKey((k) => k + 1)}
+          disabled={loading}
+          className="refreshBtn"
+        >
+          {loading ? "Refreshing…" : "Refresh"}
+        </button>
 
-      {/* Search (custom cities) */}
-      {indexError ? (
-        <p className="error">{indexError}</p>
-      ) : (
-        <CitySearch
-          cityIndex={cityIndex ?? []}
-          disabled={!cityIndex}
-          onSelect={(picked) => {
-            setCity(picked);
-            setSelectedTab("custom"); // un-highlight the tabs
-          }}
-        />
-      )}
+        {indexError ? (
+          <p className="error topBar__error">{indexError}</p>
+        ) : (
+          <div className="topBar__search">
+            <CitySearch
+              cityIndex={cityIndex ?? []}
+              disabled={!cityIndex}
+              onSelect={(picked) => {
+                setCity(picked);
+                setSelectedTab("custom");
+              }}
+            />
+          </div>
+        )}
+      </div>
 
       <div style={{ maxWidth: 430, margin: "0 auto" }}>
         {/* Tabs (the first 3 cities) */}

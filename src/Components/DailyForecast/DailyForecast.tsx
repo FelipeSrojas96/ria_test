@@ -1,6 +1,6 @@
 import React from "react";
-import { iconUrl } from "../lib/openWeather";
-import type { DailyAgg } from "../lib/aggregate";
+import { iconUrl } from "../../lib/openWeather";
+import type { DailyAgg } from "../../lib/aggregate";
 import "./DailyForecast.css";
 
 export function Next5DaysForecast({ dailyData }: { dailyData: DailyAgg[] }) {
