@@ -1,7 +1,3 @@
-Here’s a clearer **README-style** section for installing and running a **React + Vite** app.
-
----
-
 # Weather app (React + Vite)
 
 ## Prerequisites
@@ -15,7 +11,6 @@ Here’s a clearer **README-style** section for installing and running a **React
    npm -v
    ```
 
-   You should see version numbers.
 
 ---
 
