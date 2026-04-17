@@ -1,4 +1,5 @@
-// openWeather.ts
+import axios from "axios";
+
 export type Units = "standard" | "metric" | "imperial";
 
 type GeoResult = {
@@ -10,7 +11,7 @@ type GeoResult = {
 };
 
 export type Forecast3hItem = {
-  dt: number; // unix seconds
+  dt: number;
   main: { temp: number; temp_min: number; temp_max: number; humidity: number };
   weather: Array<{ description: string; icon: string }>;
   pop?: number;
@@ -18,25 +19,23 @@ export type Forecast3hItem = {
 
 export type Forecast5d3hResponse = {
   list: Forecast3hItem[];
-  city: { name: string; country: string; timezone: number }; // timezone offset seconds
+  city: { name: string; country: string; timezone: number };
 };
 
-const OWM = "https://api.openweathermap.org";
+const owm = axios.create({
+  baseURL: "https://api.openweathermap.org",
+  timeout: 15_000,
+});
 
 export async function geocodeCity(
   cityQuery: string,
   apiKey: string,
   limit = 1
 ): Promise<GeoResult> {
-  // Direct geocoding :contentReference[oaicite:3]{index=3}
-  const url = new URL(`${OWM}/geo/1.0/direct`);
-  url.searchParams.set("q", cityQuery);
-  url.searchParams.set("limit", String(limit));
-  url.searchParams.set("appid", apiKey);
+  const { data } = await owm.get<GeoResult[]>("/geo/1.0/direct", {
+    params: { q: cityQuery, limit, appid: apiKey },
+  });
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Geocoding failed (${res.status})`);
-  const data: GeoResult[] = await res.json();
   if (!data.length) throw new Error(`City not found: "${cityQuery}"`);
   return data[0];
 }
@@ -48,23 +47,12 @@ export async function fetchForecast5d3h(
   units: Units = "metric",
   lang = "en"
 ): Promise<Forecast5d3hResponse> {
-  // 5 day / 3 hour forecast :contentReference[oaicite:4]{index=4}
-  const url = new URL(`${OWM}/data/2.5/forecast`);
-  url.searchParams.set("lat", String(lat));
-  url.searchParams.set("lon", String(lon));
-  url.searchParams.set("appid", apiKey);
-  url.searchParams.set("units", units);
-  url.searchParams.set("lang", lang);
+  const { data } = await owm.get<Forecast5d3hResponse>("/data/2.5/forecast", {
+    params: { lat, lon, appid: apiKey, units, lang },
+  });
 
-  const res = await fetch(url);
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Forecast failed (${res.status}): ${body}`);
-  }
-  return res.json();
+  return data;
 }
-
-
 
 export function iconUrl(iconCode: string): string {
   return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;

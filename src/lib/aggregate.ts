@@ -19,15 +19,12 @@ export function aggregateToDaily(
   days = 5
 ): DailyAgg[] {
   const tz = forecast.city.timezone;
-
   const byDay = new Map<string, Forecast3hItem[]>();
   for (const it of forecast.list) {
     const key = localDateISO(it.dt, tz);
     (byDay.get(key) ?? byDay.set(key, []).get(key)!).push(it);
   }
-
   const sorted = [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-
   const out: DailyAgg[] = [];
   for (const [dateISO, items] of sorted) {
     if (out.length >= days) break;
@@ -35,21 +32,26 @@ export function aggregateToDaily(
     let minTemp = Infinity;
     let maxTemp = -Infinity;
     let humSum = 0;
-
-    // representative (icon/desc) = closest to ~12:00 local
-    let best: { diff: number; it: Forecast3hItem } | null = null;
+    const iconCount = new Map<string, { count: number; it: Forecast3hItem }>();
 
     for (const it of items) {
       minTemp = Math.min(minTemp, it.main.temp_min);
       maxTemp = Math.max(maxTemp, it.main.temp_max);
       humSum += it.main.humidity;
 
-      const localHour = new Date((it.dt + tz) * 1000).getUTCHours();
-      const diff = Math.abs(localHour - 12);
-      if (!best || diff < best.diff) best = { diff, it };
+      const icon = it.weather?.[0]?.icon;
+      if (icon) {
+        const entry = iconCount.get(icon);
+        if (entry) entry.count++;
+        else iconCount.set(icon, { count: 1, it });
+      }
     }
 
-    const rep = best?.it ?? items[0];
+    // representative = most repeated icon; fallback to first item
+    const rep = [...iconCount.values()].reduce(
+      (best, cur) => (cur.count > best.count ? cur : best),
+      { count: 0, it: items[0] }
+    ).it;
     const w = rep.weather?.[0];
 
     out.push({

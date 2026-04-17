@@ -17,15 +17,33 @@ export function useCityForecast({
   lang?: string;
   refreshKey?: number;
 }) {
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [geoError, setGeoError] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [timezoneOffset, setTimezoneOffset] = useState(0);
-
   const [hourlyData, setHourlyData] = useState<Forecast3hItem[]>([]);
-  const [dailyData, setdailyData] = useState<DailyAgg[]>([]);
+  const [dailyData, setDailyData] = useState<DailyAgg[]>([]);
 
+  // Geocode only when the city changes
   useEffect(() => {
+    let cancelled = false;
+
+    setCoords(null);
+    setGeoError(null);
+
+    geocodeCity(cityQuery, apiKey, 1)
+      .then((geo) => { if (!cancelled) setCoords({ lat: geo.lat, lon: geo.lon }); })
+      .catch((e: any) => { if (!cancelled) setGeoError(e?.message ?? "City not found"); });
+
+    return () => { cancelled = true; };
+  }, [cityQuery, apiKey]);
+
+  // Fetch forecast when coords are ready or refresh is triggered
+  useEffect(() => {
+    if (!coords) return;
     let cancelled = false;
 
     async function run() {
@@ -33,21 +51,12 @@ export function useCityForecast({
         setLoading(true);
         setError(null);
 
-        const geo = await geocodeCity(cityQuery, apiKey, 1);
-        if (cancelled) return;
-
-        const forecast = await fetchForecast5d3h(
-          geo.lat,
-          geo.lon,
-          apiKey,
-          units,
-          lang
-        );
+        const forecast = await fetchForecast5d3h(coords!.lat, coords!.lon, apiKey, units, lang);
         if (cancelled) return;
 
         setTimezoneOffset(forecast.city.timezone);
         setHourlyData(forecast.list);
-        setdailyData(aggregateToDaily(forecast, 5));
+        setDailyData(aggregateToDaily(forecast, 5));
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "Unknown error");
       } finally {
@@ -56,10 +65,8 @@ export function useCityForecast({
     }
 
     run();
-    return () => {
-      cancelled = true;
-    };
-  }, [cityQuery, apiKey, units, lang, refreshKey,refreshKey]);
+    return () => { cancelled = true; };
+  }, [coords, apiKey, units, lang, refreshKey]);
 
-  return { loading, error, timezoneOffset, hourlyData, dailyData };
+  return { loading, error: geoError ?? error, timezoneOffset, hourlyData, dailyData };
 }
